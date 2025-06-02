@@ -18,8 +18,41 @@ model User {
   id        Int   @default(autoincrement()) @id
   email     String   @unique
   password  String?
+  orders    Order[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model Order {
+  id        Int   @default(autoincrement()) @id
+  userId    Int
+  User      User  @relation(fields: [userId], references: [id])
+  orderProduct  OrderProduct[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
+
+model Product {
+  id        Int   @default(autoincrement()) @id
+  name      String
+  price     Float
+  orderProduct  OrderProduct[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("products")
+}
+
+model OrderProduct {
+  Order     Order  @relation(fields: [orderId], references: [id])
+  orderId   Int
+  Product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@id([orderId, productId])
+  @@map("order_products")
 }
